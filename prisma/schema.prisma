@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Restaurant Menu Items
+model MenuItem {
+  id          String     @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  image       String
+  category    String
+  featured    Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  orderItems  OrderItem[]
+}
+
+// Customer Orders
+model Order {
+  id              String     @id @default(uuid())
+  customerName    String
+  customerEmail   String?
+  customerPhone   String
+  deliveryAddress String
+  totalAmount     Float
+  status          String     @default("pending") // pending, paid, delivered, cancelled
+  paymentMethod   String     @default("mpesa")
+  paymentStatus   String     @default("pending") // pending, completed, failed
+  transactionId   String?
+  orderItems      OrderItem[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+// Order Items (items in a customer's order)
+model OrderItem {
+  id          String    @id @default(uuid())
+  quantity    Int
+  price       Float
+  menuItem    MenuItem  @relation(fields: [menuItemId], references: [id])
+  menuItemId  String
+  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// M-Pesa Transactions
+model MpesaTransaction {
+  id                String   @id @default(uuid())
+  orderId           String?
+  phoneNumber       String
+  amount            Float
+  transactionId     String?  @unique
+  transactionDate   DateTime?
+  status            String   @default("pending") // pending, completed, failed
+  resultCode        String?
+  resultDescription String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// SMS Notifications
+model SmsNotification {
+  id          String   @id @default(uuid())
+  orderId     String?
+  phoneNumber String
+  message     String
+  status      String   @default("pending") // pending, sent, failed
+  messageId   String?
+  metadata    String?  // JSON string for API responses
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
