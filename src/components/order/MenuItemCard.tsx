@@ -2,7 +2,16 @@
 
 import React from 'react';
 import { FiShoppingCart, FiPlus, FiMinus } from 'react-icons/fi';
-import { MenuItem } from '@prisma/client';
+import { CartItem } from '../../lib/cart';
+
+interface MenuItem {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image?: string | null;
+  category?: string;
+}
 import { useCart } from '../../lib/cart';
 
 interface MenuItemCardProps {
@@ -18,8 +27,10 @@ export default function MenuItemCard({ item }: MenuItemCardProps) {
       name: item.name,
       price: item.price,
       quantity: 1,
-      image: item.image,
+      image: item.image || undefined,
     });
+    
+    alert('Item added to cart!');
   };
 
   return (
@@ -30,7 +41,7 @@ export default function MenuItemCard({ item }: MenuItemCardProps) {
       <div className="p-4">
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-lg font-semibold">{item.name}</h3>
-          <span className="text-amber-600 font-medium">${item.price.toFixed(2)}</span>
+          <span className="text-amber-600 font-medium">KES {(item.price * 150).toFixed(2)}</span>
         </div>
         <p className="text-gray-600 text-sm mb-4">{item.description}</p>
         <button

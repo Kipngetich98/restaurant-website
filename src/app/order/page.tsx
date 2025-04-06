@@ -1,27 +1,101 @@
-import React from 'react';
-import { prisma } from '../../lib/db';
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { FiShoppingCart } from 'react-icons/fi';
+import { useCart } from '../../lib/cart';
+import { convertToKES } from '../../lib/utils';
 import MenuItemCard from '../../components/order/MenuItemCard';
 
-export const metadata = {
-  title: 'Savory Delights | Order Online',
-  description: 'Order your favorite meals online from Savory Delights Restaurant. Fast delivery and easy checkout.',
-  keywords: 'food ordering, online order, restaurant delivery, Nairobi restaurant',
-};
+interface MenuItem {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  image: string | null;
+}
 
-export default async function OrderPage() {
-  const menuItems = await prisma.menuItem.findMany({
-    orderBy: {
-      category: 'asc',
-    },
-  });
-
+export default function OrderPage() {
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { addItem } = useCart();
+  
+  useEffect(() => {
+    const demoMenuItems: MenuItem[] = [
+      {
+        id: '1',
+        name: 'Chicken Wings',
+        description: 'Crispy wings tossed in your choice of sauce: BBQ, Buffalo, or Honey Garlic',
+        price: 10.99,
+        category: 'Appetizers',
+        image: null
+      },
+      {
+        id: '2',
+        name: 'Garlic Bread',
+        description: 'Freshly baked bread with garlic butter and herbs',
+        price: 6.99,
+        category: 'Appetizers',
+        image: null
+      },
+      {
+        id: '3',
+        name: 'Mozzarella Sticks',
+        description: 'Breaded mozzarella sticks served with marinara sauce',
+        price: 8.99,
+        category: 'Appetizers',
+        image: null
+      },
+      {
+        id: '4',
+        name: 'Classic Burger',
+        description: 'Juicy beef patty with lettuce, tomato, and our special sauce',
+        price: 12.99,
+        category: 'Burgers',
+        image: null
+      },
+      {
+        id: '5',
+        name: 'Veggie Burger',
+        description: 'Plant-based patty with avocado, sprouts, and vegan mayo',
+        price: 14.99,
+        category: 'Burgers',
+        image: null
+      },
+      {
+        id: '6',
+        name: 'Margherita Pizza',
+        description: 'Fresh mozzarella, tomatoes, and basil on our homemade crust',
+        price: 16.99,
+        category: 'Pizzas',
+        image: null
+      }
+    ];
+    
+    setMenuItems(demoMenuItems);
+    setLoading(false);
+  }, []);
+  
+  const handleAddToCart = (item: MenuItem) => {
+    console.log('Adding item to cart:', item);
+    addItem({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: 1,
+      image: item.image || undefined,
+    });
+    
+    alert('Item added to cart!');
+  };
+  
   const categories = menuItems.reduce((acc, item) => {
     if (!acc[item.category]) {
       acc[item.category] = [];
     }
     acc[item.category].push(item);
     return acc;
-  }, {} as Record<string, typeof menuItems>);
+  }, {} as Record<string, MenuItem[]>);
 
   return (
     <div className="bg-gray-50 py-12">
@@ -53,7 +127,16 @@ export default async function OrderPage() {
               <h2 className="text-2xl font-bold mb-6">{category}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {items.map((item) => (
-                  <MenuItemCard key={item.id} item={item} />
+                  <MenuItemCard 
+                    key={item.id} 
+                    item={{
+                      id: item.id,
+                      name: item.name,
+                      description: item.description,
+                      price: item.price,
+                      image: item.image
+                    }} 
+                  />
                 ))}
               </div>
             </div>

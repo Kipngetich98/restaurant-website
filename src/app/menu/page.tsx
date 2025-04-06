@@ -1,12 +1,13 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { FiShoppingCart } from 'react-icons/fi';
+import { useRouter } from 'next/navigation';
+import { useCart } from '../../lib/cart';
+import { convertToKES } from '../../lib/utils';
+import MenuItemCard from '../../components/order/MenuItemCard';
 
-export const metadata = {
-  title: 'Savory Delights | Menu',
-  description: 'Explore our delicious menu featuring a variety of dishes made with fresh ingredients.',
-  keywords: 'restaurant menu, food menu, dining options, Nairobi restaurant',
-};
 
 const menuCategories = [
   {
@@ -153,6 +154,22 @@ const menuCategories = [
 ];
 
 export default function Menu() {
+  const router = useRouter();
+  
+  const { addItem } = useCart();
+  
+  const handleAddToCart = (item: any) => {
+    addItem({
+      id: item.id.toString(),
+      name: item.name,
+      price: item.price,
+      quantity: 1,
+      image: item.image || undefined,
+    });
+    
+    alert('Item added to cart!');
+  };
+  
   return (
     <div className="bg-gray-50 py-12">
       <div className="container mx-auto px-4">
@@ -183,24 +200,16 @@ export default function Menu() {
               <h2 className="text-2xl font-bold mb-6 text-center">{category.name}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {category.items.map((item) => (
-                  <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div className="relative h-48 bg-gray-300 flex items-center justify-center">
-                      <span className="text-gray-500">Image</span>
-                    </div>
-                    <div className="p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <h3 className="text-lg font-semibold">{item.name}</h3>
-                        <span className="text-amber-600 font-medium">${item.price.toFixed(2)}</span>
-                      </div>
-                      <p className="text-gray-600 text-sm mb-4">{item.description}</p>
-                      <Link
-                        href={`/order?item=${item.id}`}
-                        className="inline-flex items-center bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors"
-                      >
-                        <FiShoppingCart className="mr-2" /> Add to Cart
-                      </Link>
-                    </div>
-                  </div>
+                  <MenuItemCard 
+                    key={item.id} 
+                    item={{
+                      id: item.id.toString(),
+                      name: item.name,
+                      description: item.description,
+                      price: item.price,
+                      image: item.image
+                    }} 
+                  />
                 ))}
               </div>
             </div>
