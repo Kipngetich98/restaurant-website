@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { FiShoppingCart, FiPlus, FiMinus } from 'react-icons/fi';
 import { MenuItem } from '@prisma/client';
