@@ -210,14 +210,14 @@ export default function PaymentPage() {
                       <span>
                         {item.menuItem?.name || 'Item'} x {item.quantity}
                       </span>
-                      <span>${(item.price * item.quantity).toFixed(2)}</span>
+                      <span>KES {(item.price * item.quantity * 150).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
                 <div className="border-t pt-3">
                   <div className="flex justify-between font-semibold">
                     <span>Total</span>
-                    <span>${order.totalAmount.toFixed(2)}</span>
+                    <span>KES {(order.totalAmount * 150).toFixed(2)}</span>
                   </div>
                 </div>
               </div>

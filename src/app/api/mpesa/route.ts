@@ -184,7 +184,7 @@ export async function PUT(request: NextRequest) {
         data: {
           orderId: transaction.orderId,
           phoneNumber: transaction.phoneNumber,
-          message: `Your payment of KES ${transaction.amount} for order #${transaction.orderId.substring(0, 8)} has been received. Your order is being processed.`,
+          message: `Your payment of KES ${(transaction.amount * 150).toFixed(2)} for order #${transaction.orderId.substring(0, 8)} has been received. Your order is being processed.`,
           status: 'pending',
         },
       });
@@ -194,7 +194,7 @@ export async function PUT(request: NextRequest) {
         data: {
           orderId: transaction.orderId,
           phoneNumber: process.env.RESTAURANT_PHONE || '254712345678', // Restaurant owner's phone
-          message: `New order #${transaction.orderId.substring(0, 8)} received. Amount: KES ${transaction.amount}. Please prepare the order.`,
+          message: `New order #${transaction.orderId.substring(0, 8)} received. Amount: KES ${(transaction.amount * 150).toFixed(2)}. Please prepare the order.`,
           status: 'pending',
         },
       });

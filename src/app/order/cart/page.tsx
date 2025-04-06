@@ -54,7 +54,7 @@ export default function CartPage() {
                           </div>
                           <div>
                             <h3 className="font-semibold">{item.name}</h3>
-                            <p className="text-amber-600">${item.price.toFixed(2)}</p>
+                            <p className="text-amber-600">KES {(item.price * 150).toFixed(2)}</p>
                           </div>
                         </div>
                         <div className="flex items-center">
@@ -104,14 +104,14 @@ export default function CartPage() {
                       <span>
                         {item.name} x {item.quantity}
                       </span>
-                      <span>${(item.price * item.quantity).toFixed(2)}</span>
+                      <span>KES {(item.price * item.quantity * 150).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
                 <div className="border-t pt-4 mb-6">
                   <div className="flex justify-between font-semibold">
                     <span>Total</span>
-                    <span>${getTotalPrice().toFixed(2)}</span>
+                    <span>KES {(getTotalPrice() * 150).toFixed(2)}</span>
                   </div>
                 </div>
                 <button
